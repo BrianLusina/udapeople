@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  database:
+    container_name: udapeople_db
+    image: "postgres:13"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=glee
+    ports:
+      - "5532:5432"
+    volumes:
+      - database:/var/lib/postgresql/data
+
+volumes:
+  database:    
