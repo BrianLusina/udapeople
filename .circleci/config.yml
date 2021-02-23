@@ -34,6 +34,9 @@ executors:
       - image: circleci/node:<< pipeline.parameters.node-image-tag >>
     working_directory: << pipeline.parameters.workingdir >>
 
+orbs:
+  slack: circleci/slack@4.3.0
+
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -68,6 +71,19 @@ commands:
             #  Add revert code here. You can find this in the Getting Started section.
               exit 1
             fi
+    
+  alert_on_failure:
+    description: Notifies channel on failure
+    parameters:
+      channel:
+        description: Slack channel to send slack notification
+        type: string
+        default: $SLACK_DEFAULT_CHANNEL
+    steps:
+      - slack/notify:
+          channel: $SLACK_DEFAULT_CHANNEL
+          event: fail
+          template: basic_fail_1
 
 jobs:
   build-frontend:
@@ -88,6 +104,8 @@ jobs:
             - frontend/node_modules
           key: frontend
 
+      - alert_on_failure
+
   build-backend:
     executor: node-executor
     steps:
@@ -105,6 +123,7 @@ jobs:
             - backend          
             - backend/node_modules
           key: backend
+      - alert_on_failure
 
   test-frontend:
     executor: node-executor
@@ -118,7 +137,8 @@ jobs:
           command: |
             cd frontend
             npm run test
-                
+      - alert_on_failure
+
   test-backend:
     executor: node-executor
     steps:
@@ -131,6 +151,7 @@ jobs:
           command: |
             cd backend
             npm run test
+      - alert_on_failure
 
   scan-frontend:
     executor: node-executor
@@ -144,6 +165,7 @@ jobs:
           command: |
             cd frontend
             npm audit --audit-level=critical
+      - alert_on_failure
 
   scan-backend:
     executor: node-executor
@@ -157,6 +179,7 @@ jobs:
           command: |
             cd backend
             npm audit --audit-level=critical
+      - alert_on_failure
 
   deploy-infrastructure:
     executor: aws-executor
@@ -190,6 +213,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
+      - alert_on_failure
 
   configure-infrastructure:
     executor: ansible-executor
@@ -208,6 +232,7 @@ jobs:
             # Your code here
             exit 1
       # Here's where you will add some code to rollback on failure      
+      - alert_on_failure
 
   run-migrations:
     executor: node-executor
@@ -224,6 +249,7 @@ jobs:
             # Your code here
             exit 1
      # Here's where you will add some code to rollback on failure      
+      - alert_on_failure
 
   deploy-frontend:
     executor: aws-executor
@@ -244,7 +270,8 @@ jobs:
           command: |
             # your code here
       # Here's where you will add some code to rollback on failure      
-                    
+      - alert_on_failure
+
   deploy-backend:
     executor: ansible-executor
     steps:
@@ -260,6 +287,7 @@ jobs:
           command: |
             # your code here
       # Here's where you will add some code to rollback on failure  
+      - alert_on_failure
 
   smoke-test:
     executor: smoke-executor
@@ -282,6 +310,7 @@ jobs:
           command: |
             # your code here
       # Here's where you will add some code to rollback on failure  
+      - alert_on_failure
 
   cloudfront-update:
     executor: aws-executor
@@ -296,6 +325,7 @@ jobs:
           command: |
             # your code here
       # Here's where you will add some code to rollback on failure  
+      - alert_on_failure
 
   cleanup:
     executor: node-executor
@@ -314,36 +344,64 @@ jobs:
             then
               # your code here
             fi
+      - alert_on_failure
 
 workflows:
   build_test_scan_deploy_configure:
     jobs:
-      - build-frontend
-      - build-backend
+      - build-frontend:
+          context: udapeople-ctx
+
+      - build-backend:
+          context: udapeople-ctx
+
       - test-frontend:
+          context: udapeople-ctx
           requires: [build-frontend]
+
       - test-backend:
+          context: udapeople-ctx
           requires: [build-backend]
+
       - scan-backend:
+          context: udapeople-ctx
           requires: [build-backend]
+
       - scan-frontend:
+          context: udapeople-ctx
           requires: [build-frontend]
+
       - deploy-infrastructure:
+          context: udapeople-ctx
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
               only: [test-feature-branch]
+
       - configure-infrastructure:
+          context: udapeople-ctx
           requires: [deploy-infrastructure]
+
       - run-migrations:
+          context: udapeople-ctx
           requires: [configure-infrastructure]
+
       - deploy-frontend:
+          context: udapeople-ctx
           requires: [run-migrations]
+          
       - deploy-backend:
+          context: udapeople-ctx
           requires: [run-migrations]
+
       - smoke-test:
+          context: udapeople-ctx
           requires: [deploy-backend, deploy-frontend]
+
       - cloudfront-update:
+          context: udapeople-ctx
           requires: [smoke-test]
+
       - cleanup:
+          context: udapeople-ctx
           requires: [cloudfront-update]
