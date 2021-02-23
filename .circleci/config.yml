@@ -68,7 +68,7 @@ commands:
             #  Add revert code here. You can find this in the Getting Started section.
               exit 1
             fi
-            
+
 jobs:
   build-frontend:
     executor: node-executor
@@ -83,8 +83,10 @@ jobs:
             npm install
             npm run build
       - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
+          paths: 
+            - frontend
+            - frontend/node_modules
+          key: frontend
 
   build-backend:
     executor: node-executor
@@ -99,8 +101,10 @@ jobs:
             npm install
             npm run build
       - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
+          paths: 
+            - backend          
+            - backend/node_modules
+          key: backend
 
   test-frontend:
     executor: node-executor
@@ -108,7 +112,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - restore_cache:
-          key: frontend-build
+          key: frontend
       - run:
           name: Lint
           command: |
@@ -126,7 +130,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - restore_cache:
-          key: backend-build
+          key: backend
       - run:
           name: Lint
           command: |
@@ -144,7 +148,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - restore_cache:
-          key: frontend-build
+          key: frontend
       - run:
           name: Audit
           command: |
@@ -157,7 +161,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - restore_cache:
-          key: backend-build
+          key: backend
       - run:
           name: Audit
           command: |
