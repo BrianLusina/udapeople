@@ -1,7 +1,7 @@
 {
-  "name": "glee2",
+  "name": "udapeople-api",
   "version": "1.0.0",
-  "description": "This is just a test.",
+  "description": "UdaPeople backend API",
   "author": "",
   "license": "MIT",
   "scripts": {
