@@ -1,5 +1,39 @@
 version: 2.1
 
+parameters:
+  workingdir:
+    type: string
+    default: "~/udapeople"
+  node-image-tag:
+    type: string
+    default: "10"
+
+executors:
+  terra-executor:
+    docker:
+      - image: amazon/aws-cli
+    working_directory: << pipeline.parameters.workingdir >>
+  
+  ansible-executor:
+    docker:
+      - image: python:3.7-alpine3.11
+    working_directory: << pipeline.parameters.workingdir >>
+  
+  smoke-executor:
+    docker:
+      - image: amazon/aws-cli
+    working_directory: << pipeline.parameters.workingdir >>
+
+  docker-executor:
+    docker:
+      - image: docker:17.05.0-ce-git
+    working_directory: << pipeline.parameters.workingdir >>
+
+  node-executor:
+    docker:
+      - image: circleci/node:<< pipeline.parameters.node-image-tag >>
+    working_directory: << pipeline.parameters.workingdir >>
+
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
