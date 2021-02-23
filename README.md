@@ -1,6 +1,7 @@
 # UdaPeople
 
-HR Product
+HR Product for a revolutionary company :).
+This is a sample mono repo project with a backend & frontend showcasing infrastructure as code, deployment strategy using Blue Green deployments & configuration management with Ansible. Below indicate steps & requirements to get you setup & started. You can modify them to suit your needs as you see fit.
 
 ## Getting Started
 
@@ -9,9 +10,9 @@ Instructions for how to get a copy of the project running on your local machine.
 ### Dependencies
 
 * Git SCM
-* SSH client like OpenSSH
+* SSH client like OpenSSH (not necessary, but recommended to test configuration management of your servers)
 * NodeJs v10 or higher (if you plan on compiling locally)
-* AWS CLI & AWS ccount
+* AWS CLI & AWS account
 * CircleCI Account (or similar CI server if CircleCI is not for you, in that case, you will have to modify & adapt the config to suit your needs)
 * Docker & Docker compose 
 
@@ -59,7 +60,7 @@ TYPEORM_DATABASE=glee
 
 You can use your own Postgres server if you wish or you can use the Docker-Compose template provided in the directory root.
 
-## Running PostgreSQL in Docker-Compose
+## Running PostgreSQL in Docker-Compose (recommended)
 
 For convenience, there is a provided template that you can use to easily run a Postgres database for local testing. To run this template, you'll need to install Docker and Docker-Compose.
 
@@ -134,4 +135,4 @@ There is a `config.yml` available [here](./circleci/config.yml) to help with con
 
 ### License
 
-[License](LICENSE.md)
+[License](./LICENSE)
