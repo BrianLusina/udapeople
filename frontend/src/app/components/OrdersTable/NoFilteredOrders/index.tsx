@@ -16,9 +16,9 @@ export class NoFilteredOrders extends Component<NoFilteredOrders.Props> {
     return (
       <div className={style['no-orders']}>
         <span className={style.icon} />
-        <h3 className={style.title}>{`We couldn't find any orders related to "${
+        <h3 className={style.title}>{`We couldn't find any orders related to '${
           this.props.searchText
-        }"`}</h3>
+        }'`}</h3>
         <span>
           Please try with a different order number,
           <br />

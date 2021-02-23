@@ -1,7 +1,7 @@
 import { EmployeeActions } from '../actions';
 import { EmployeeState } from './state';
 import { employeeReducer, employeesInitialState } from './employees';
-// import { employeesSampleData } from "./sampleData";
+// import { employeesSampleData } from './sampleData';
 
 describe('Employees Reducer', () => {
   const initialState: EmployeeState = {

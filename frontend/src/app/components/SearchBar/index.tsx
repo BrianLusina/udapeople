@@ -50,10 +50,10 @@ export class SearchBar extends React.Component<SearchBar.Props> {
   render() {
     // const { searchInput } = this.props;
     return (
-      // <div className={style["search-bar"]}>
+      // <div className={style['search-bar']}>
       //   {this.props.children}
       //   {searchInput ? (
-      //     <div className={`${style["bread-bar-container"]}`}>
+      //     <div className={`${style['bread-bar-container']}`}>
       //       {this.props.searchInput}
       //     </div>
       //   ) : null}

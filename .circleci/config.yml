@@ -114,11 +114,6 @@ jobs:
       - restore_cache:
           key: frontend
       - run:
-          name: Lint
-          command: |
-            cd frontend
-            npm run lint
-      - run:
           name: Test
           command: |
             cd frontend
@@ -131,11 +126,6 @@ jobs:
           at: ~/
       - restore_cache:
           key: backend
-      - run:
-          name: Lint
-          command: |
-            cd backend
-            npm run lint
       - run:
           name: Test
           command: |

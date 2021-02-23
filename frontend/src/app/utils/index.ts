@@ -33,4 +33,4 @@ export const showErrorNotification = (
 
 export const showSuccessNotification = (
   message: string
-) => showNotification(message, { type: "success" });
+) => showNotification(message, { type: 'success' });
