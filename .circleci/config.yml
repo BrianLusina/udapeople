@@ -78,7 +78,9 @@ jobs:
           keys: [frontend-build]
       - run:
           name: Build front-end
-          command: npm run build
+          command: |
+            cd frontend
+            npm run build
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -91,7 +93,9 @@ jobs:
           keys: [backend-build]
       - run:
           name: Back-end build
-          command: npm run build
+          command: |
+            cd backend
+            npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -105,10 +109,14 @@ jobs:
           key: frontend-build
       - run:
           name: Lint
-          command: npm run lint
+          command: |
+            cd frontend
+            npm run lint
       - run:
           name: Test
-          command: npm run test
+          command: |
+            cd frontend
+            npm run test
                 
   test-backend:
     executor: node-executor
@@ -119,10 +127,14 @@ jobs:
           key: backend-build
       - run:
           name: Lint
-          command: npm run lint
+          command: |
+            cd backend
+            npm run lint
       - run:
           name: Test
-          command: npm run test
+          command: |
+            cd backend
+            npm run test
 
   scan-frontend:
     executor: node-executor
@@ -133,7 +145,9 @@ jobs:
           key: frontend-build
       - run:
           name: Audit
-          command: npm audit --audit-level=critical
+          command: |
+            cd frontend
+            npm audit --audit-level=critical
 
   scan-backend:
     executor: node-executor
@@ -144,7 +158,9 @@ jobs:
           key: backend-build
       - run:
           name: Audit
-          command: npm audit --audit-level=critical
+          command: |
+            cd backend
+            npm audit --audit-level=critical
 
   deploy-infrastructure:
     executor: aws-executor
