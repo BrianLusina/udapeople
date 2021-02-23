@@ -121,6 +121,7 @@ export enum SalaryType {
 }
 
 export function getDateFromString(date: string): Date {
+  // @ts-ignore
   return moment(date).format('M/D/YYYY');
 }
 

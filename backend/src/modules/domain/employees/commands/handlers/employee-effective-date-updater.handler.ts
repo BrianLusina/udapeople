@@ -19,9 +19,8 @@ export class EmployeeEffectiveDateUpdater extends BaseCommandHandler<UpdateEmplo
 
     const employee = await this.employeeRepository.findById(employeeId);
 
-    employee.effectiveDate = moment(effectiveDate)
-    .utc()
-    .format();
+    // @ts-ignore
+    employee.effectiveDate = moment(effectiveDate).utc().format();
 
     await this.employeeRepository.save(employee);
   }
