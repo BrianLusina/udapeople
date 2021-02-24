@@ -91,17 +91,18 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: 
+            - frontend--$CIRCLE_SHA1-{{ .Branch }}
       - run:
-          name: Build front-end
+          name: Build frontend
           command: |
             cd frontend
             npm install
             npm run build
       - save_cache:
+          key: frontend-$CIRCLE_SHA1-{{ .Branch }}
           paths: 
             - frontend/node_modules
-          key: frontend-{{ epoch }}
       - alert_on_failure
 
   build-backend:
@@ -109,17 +110,18 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: 
+            - backend-$CIRCLE_SHA1-{{ .Branch }}
       - run:
-          name: Back-end build
+          name: Backend build
           command: |
             cd backend
             npm install
             npm run build
       - save_cache:
+          key: backend-$CIRCLE_SHA1-{{ .Branch }}
           paths:          
             - backend/node_modules
-          key: backend-{{ epoch }}
       - alert_on_failure
 
   test-frontend:
@@ -127,7 +129,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: frontend-{{ epoch }}
+          key: frontend-$CIRCLE_SHA1-{{ .Branch }}
       - run:
           name: Test
           command: |
@@ -140,7 +142,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: backend-{{ epoch }}
+          key: backend-$CIRCLE_SHA1-{{ .Branch }}
       - run:
           name: Test
           command: |
@@ -153,7 +155,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: frontend-{{ epoch }}
+          key: frontend-$CIRCLE_SHA1-{{ .Branch }}
       - run:
           name: Audit
           command: |
@@ -166,7 +168,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: backend-{{ epoch }}
+          key: backend-$CIRCLE_SHA1-{{ .Branch }}
       - run:
           name: Audit
           command: |
