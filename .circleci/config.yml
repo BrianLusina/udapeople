@@ -100,7 +100,6 @@ jobs:
             npm run build
       - save_cache:
           paths: 
-            - frontend
             - frontend/node_modules
           key: frontend
       - alert_on_failure
@@ -118,8 +117,7 @@ jobs:
             npm install
             npm run build
       - save_cache:
-          paths: 
-            - backend          
+          paths:          
             - backend/node_modules
           key: backend
       - alert_on_failure
