@@ -103,7 +103,6 @@ jobs:
             - frontend
             - frontend/node_modules
           key: frontend
-
       - alert_on_failure
 
   build-backend:
@@ -128,8 +127,7 @@ jobs:
   test-frontend:
     executor: node-executor
     steps:
-      - attach_workspace:
-          at: ~/
+      - checkout
       - restore_cache:
           key: frontend
       - run:
@@ -142,8 +140,7 @@ jobs:
   test-backend:
     executor: node-executor
     steps:
-      - attach_workspace:
-          at: ~/
+      - checkout
       - restore_cache:
           key: backend
       - run:
@@ -156,8 +153,7 @@ jobs:
   scan-frontend:
     executor: node-executor
     steps:
-      - attach_workspace:
-          at: ~/
+      - checkout
       - restore_cache:
           key: frontend
       - run:
@@ -170,8 +166,7 @@ jobs:
   scan-backend:
     executor: node-executor
     steps:
-      - attach_workspace:
-          at: ~/
+      - checkout
       - restore_cache:
           key: backend
       - run:
@@ -184,7 +179,7 @@ jobs:
   deploy-infrastructure:
     executor: aws-executor
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -218,7 +213,7 @@ jobs:
   configure-infrastructure:
     executor: ansible-executor
     steps:
-      # Checkout code from git
+      - checkout
       # Add ssh keys with fingerprint
       # attach workspace
       - run:
@@ -237,7 +232,7 @@ jobs:
   run-migrations:
     executor: node-executor
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Run migrations
           command: |
@@ -254,7 +249,7 @@ jobs:
   deploy-frontend:
     executor: aws-executor
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
@@ -275,7 +270,7 @@ jobs:
   deploy-backend:
     executor: ansible-executor
     steps:
-      # Checkout code from git
+      - checkout
       # Add ssh keys with fingerprint
       # attach workspace
       - run:
@@ -292,7 +287,7 @@ jobs:
   smoke-test:
     executor: smoke-executor
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
@@ -315,7 +310,7 @@ jobs:
   cloudfront-update:
     executor: aws-executor
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
@@ -330,7 +325,7 @@ jobs:
   cleanup:
     executor: node-executor
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Get old stack workflow id
           command: |
