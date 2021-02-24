@@ -92,7 +92,9 @@ jobs:
       - checkout
       - restore_cache:
           keys: 
-            - frontend--$CIRCLE_SHA1-{{ .Branch }}
+            - frontend-{{ .Environment.CIRCLE_SHA1 }}-{{ .Branch }}
+            - frontend-{{ .Environment.CIRCLE_SHA1 }}
+            - frontend
       - run:
           name: Build frontend
           command: |
@@ -100,7 +102,7 @@ jobs:
             npm install
             npm run build
       - save_cache:
-          key: frontend-$CIRCLE_SHA1-{{ .Branch }}
+          key: frontend-{{ .Environment.CIRCLE_SHA1 }}-{{ .Branch }}
           paths: 
             - frontend/node_modules
       - alert_on_failure
@@ -111,7 +113,9 @@ jobs:
       - checkout
       - restore_cache:
           keys: 
-            - backend-$CIRCLE_SHA1-{{ .Branch }}
+            - backend-{{ .Environment.CIRCLE_SHA1 }}-{{ .Branch }}
+            - backend-{{ .Environment.CIRCLE_SHA1 }}
+            - backend
       - run:
           name: Backend build
           command: |
@@ -119,7 +123,7 @@ jobs:
             npm install
             npm run build
       - save_cache:
-          key: backend-$CIRCLE_SHA1-{{ .Branch }}
+          key: backend-{{ .Environment.CIRCLE_SHA1 }}-{{ .Branch }}
           paths:          
             - backend/node_modules
       - alert_on_failure
@@ -129,7 +133,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: frontend-$CIRCLE_SHA1-{{ .Branch }}
+          keys: 
+            - frontend-{{ .Environment.CIRCLE_SHA1 }}-{{ .Branch }}
+            - frontend-{{ .Environment.CIRCLE_SHA1 }}
+            - frontend
       - run:
           name: Test
           command: |
@@ -142,7 +149,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: backend-$CIRCLE_SHA1-{{ .Branch }}
+          keys: 
+            - backend-{{ .Environment.CIRCLE_SHA1 }}-{{ .Branch }}
+            - backend-{{ .Environment.CIRCLE_SHA1 }}
+            - backend
       - run:
           name: Test
           command: |
@@ -155,7 +165,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: frontend-$CIRCLE_SHA1-{{ .Branch }}
+          key: frontend-{{ .Environment.CIRCLE_SHA1 }}-{{ .Branch }}
       - run:
           name: Audit
           command: |
@@ -168,7 +178,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: backend-$CIRCLE_SHA1-{{ .Branch }}
+          key: backend-{{ .Environment.CIRCLE_SHA1 }}-{{ .Branch }}
       - run:
           name: Audit
           command: |
