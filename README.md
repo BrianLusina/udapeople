@@ -124,6 +124,10 @@ Each cloud formation configuration is under a relevant folder.
 
 There is a `config.yml` available [here](./circleci/config.yml) to help with configuring CircleCI to fit your needs.
 
+## Deployment
+
+Deployment notes can be found [here](./docs/DEPLOYMENT.md)
+
 ### Built With
 
 - [Circle CI](www.circleci.com) - Cloud-based CI/CD service
