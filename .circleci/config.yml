@@ -194,7 +194,7 @@ jobs:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
-              --template-file .circleci/files/backend.yml \
+              --template-file infra/servers/backend.yml \
               #--tags project=your-tag \
               # --stack-name "your back-end stack name with workflow id" \
               # --parameter-overrides ID="your workflow id"  
@@ -203,7 +203,7 @@ jobs:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
+              --template-file .infra/web/frontend.yml \
               #--tags project=your-tag \
               # --stack-name "your front-end stack name with workflow id" \
               # --parameter-overrides ID="your workflow id"  
@@ -216,7 +216,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/.circleci/ansible/inventory.txt
+            - ~/playbook/inventory.txt
       # Here's where you will add some code to rollback on failure      
       - alert_on_failure
 
@@ -224,8 +224,11 @@ jobs:
     executor: ansible-executor
     steps:
       - checkout
-      # Add ssh keys with fingerprint
-      # attach workspace
+      - add_ssh_keys:
+          fingerprints:
+            - ef:9c:cc:93:e2:98:ef:83:55:b6:d9:50:45:85:9d:47
+      - attach_workspace:
+          at: .
       - run:
           name: Install dependencies
           command: |
@@ -362,51 +365,68 @@ workflows:
 
       - test-frontend:
           context: udapeople-ctx
-          requires: [build-frontend]
+          requires: 
+            - build-frontend
 
       - test-backend:
           context: udapeople-ctx
-          requires: [build-backend]
+          requires: 
+            - build-backend
 
       - scan-backend:
           context: udapeople-ctx
-          requires: [build-backend]
+          requires: 
+            - build-backend
 
       - scan-frontend:
           context: udapeople-ctx
-          requires: [build-frontend]
+          requires: 
+            - build-frontend
 
       - deploy-infrastructure:
           context: udapeople-ctx
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          requires: 
+            - test-frontend
+            - test-backend
+            - scan-frontend
+            - scan-backend
           filters:
             branches:
-              only: [test-feature-branch]
+              only:
+                - main
 
       - configure-infrastructure:
           context: udapeople-ctx
-          requires: [deploy-infrastructure]
+          requires: 
+            - deploy-infrastructure
 
       - run-migrations:
           context: udapeople-ctx
-          requires: [configure-infrastructure]
+          requires: 
+            - configure-infrastructure
 
       - deploy-frontend:
           context: udapeople-ctx
-          requires: [run-migrations]
+          requires: 
+            - run-migrations
           
       - deploy-backend:
           context: udapeople-ctx
-          requires: [run-migrations]
+          requires:
+            - run-migrations
 
       - smoke-test:
           context: udapeople-ctx
-          requires: [deploy-backend, deploy-frontend]
+          requires: 
+             - deploy-backend
+             - deploy-frontend
 
       - cloudfront-update:
           context: udapeople-ctx
-          requires: [smoke-test]
+          requires: 
+            - smoke-test
 
       - cleanup:
           context: udapeople-ctx
-          requires: [cloudfront-update]
+          requires: 
+            - cloudfront-update
