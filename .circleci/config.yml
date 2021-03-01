@@ -217,7 +217,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - ~/playbook/inventory.txt
+            - playbook/inventory.txt
       # Here's where you will add some code to rollback on failure      
       - alert_on_failure
 
