@@ -48,7 +48,8 @@ commands:
       - run:
           name: Destroy environments
           when: on_fail
-          command: aws cloudformation delete-stack --stack-name << parameters.stackId >>
+          command: | 
+            aws cloudformation delete-stack --stack-name << parameters.stackId >>
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -211,7 +212,7 @@ jobs:
           command: |
             aws ec2 describe-instances \ 
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:project,Values=udapeople"
+              --filters "Name=tag:project,Values=udapeople" \
               --output text >> << pipeline.parameters.workingdir >>/playbook/inventory.txt
 
       - destroy-environment:
