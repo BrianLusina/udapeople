@@ -221,9 +221,9 @@ jobs:
           stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
 
       - persist_to_workspace:
-          root: ~/
+          root: .
           paths:
-            - << pipeline.parameters.workingdir >>/playbook/inventory.txt
+            - playbook/inventory.txt
 
       - alert_on_failure
 
