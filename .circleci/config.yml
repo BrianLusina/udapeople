@@ -48,9 +48,7 @@ commands:
       - run:
           name: Destroy environments
           when: on_fail
-          command: |
-            # Your code here
-            exit 1
+          command: aws cloudformation delete-stack --stack-name << parameters.stackId >>
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -211,14 +209,22 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            # Your code here
-            exit 1
+            aws ec2 describe-instances \ 
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=udapeople"
+              --output text >> << pipeline.parameters.workingdir >>/playbook/inventory.txt
+
+      - destroy-environment:
+          stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
+
+      - destroy-environment:
+          stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
 
       - persist_to_workspace:
           root: ~/
           paths:
-            - playbook/inventory.txt
-      # Here's where you will add some code to rollback on failure
+            - << pipeline.parameters.workingdir >>/playbook/inventory.txt
+
       - alert_on_failure
 
   configure-infrastructure:
@@ -240,7 +246,13 @@ jobs:
           command: |
             # Your code here
             exit 1
-      # Here's where you will add some code to rollback on failure      
+
+      - destroy-environment:
+          stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
+
+      - destroy-environment:
+          stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
+
       - alert_on_failure
 
   run-migrations:
@@ -257,7 +269,7 @@ jobs:
           command: |
             # Your code here
             exit 1
-     # Here's where you will add some code to rollback on failure      
+     # Here's where you will add some code to rollback on failure 
       - alert_on_failure
 
   deploy-frontend:
@@ -278,7 +290,12 @@ jobs:
           name: Deploy frontend objects
           command: |
             # your code here
-      # Here's where you will add some code to rollback on failure      
+      - destroy-environment:
+          stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
+
+      - destroy-environment:
+          stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
+
       - alert_on_failure
 
   deploy-backend:
@@ -295,7 +312,12 @@ jobs:
           name: Deploy backend
           command: |
             # your code here
-      # Here's where you will add some code to rollback on failure  
+      - destroy-environment:
+          stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
+
+      - destroy-environment:
+          stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
+
       - alert_on_failure
 
   smoke-test:
@@ -318,7 +340,13 @@ jobs:
           name: Frontend smoke test.
           command: |
             # your code here
-      # Here's where you will add some code to rollback on failure  
+
+      - destroy-environment:
+          stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
+
+      - destroy-environment:
+          stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
+            
       - alert_on_failure
 
   cloudfront-update:
@@ -333,7 +361,13 @@ jobs:
           name: Update cloudfront distribution
           command: |
             # your code here
-      # Here's where you will add some code to rollback on failure  
+
+      - destroy-environment:
+          stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
+
+      - destroy-environment:
+          stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
+
       - alert_on_failure
 
   cleanup:
@@ -353,6 +387,7 @@ jobs:
             then
               # your code here
             fi
+
       - alert_on_failure
 
 workflows:
