@@ -279,10 +279,12 @@ jobs:
       - attach_workspace:
           at: .
 
+      - aws-cli/setup
+
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
+            apk add --update ansible curl
 
       - run:
           name: Configure server
@@ -300,8 +302,6 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"          
             curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/udapeople-backend-url  >> << pipeline.parameters.workingdir >>/playbook/inventory.txt
             ansible-playbook playbook/configure-server.yml -i playbook/inventory.txt
-
-      - aws-cli/setup
 
       - destroy-environment:
           stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
