@@ -444,7 +444,7 @@ jobs:
       - destroy-environment:
           stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
 
-      - revert_migrations:
+      - revert-migrations:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
 
       - alert_on_failure
@@ -482,7 +482,7 @@ jobs:
       - destroy-environment:
           stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
 
-      - revert_migrations:
+      - revert-migrations:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
 
       - alert_on_failure
