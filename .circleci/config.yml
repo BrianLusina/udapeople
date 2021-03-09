@@ -55,23 +55,22 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      stackId:
-        description: Stack ID
+      id:
+        description: ID
         type: string
     steps:
       - run:
           name: Revert migrations
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = 1
-            if(( $SUCCESS==1 )); 
+            SUCCESS=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/DB_MIGRATION_<< parameters.id >>)
+            echo $SUCCESS
+            if [[ "$SUCCESS" == "success" ]]
             then
-            #  cd ~/project/backend
-            #  npm install
-            #  Add revert code here. You can find this in the Getting Started section.
-              exit 1
+              pwd
+              ls -la
+              npm run migrations:revert
             fi
-    
+
   alert_on_failure:
     description: Notifies channel on failure
     parameters:
@@ -506,7 +505,7 @@ jobs:
 workflows:
   build_test_scan_deploy_configure:
     jobs:
-      - install-backend-dependencies
+      - install-frontend-dependencies
       - install-backend-dependencies
 
       - build-frontend:
