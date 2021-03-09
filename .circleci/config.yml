@@ -221,7 +221,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - playbook/inventory.txt
+            - .
 
       - alert_on_failure
 
