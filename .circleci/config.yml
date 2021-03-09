@@ -210,7 +210,8 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project,Values=udapeople" --output text >> << pipeline.parameters.workingdir >>/playbook/inventory.txt
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project,Values=udapeople" --output text)
+            curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" --request PUT --data "${BACKEND_IP}" https://api.memstash.io/values/udapeople-backend-url
 
       - destroy-environment:
           stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
@@ -218,10 +219,12 @@ jobs:
       - destroy-environment:
           stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
 
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
+      # Fails on amazon/cli docker image due to missing tar utility.
+      # Ref: https://github.com/aws/aws-cli/issues/5106
+      # - persist_to_workspace:
+      #     root: .
+      #     paths:
+      #       - .
 
       - alert_on_failure
 
@@ -234,16 +237,17 @@ jobs:
             - ef:9c:cc:93:e2:98:ef:83:55:b6:d9:50:45:85:9d:47
       - attach_workspace:
           at: .
+
       - run:
           name: Install dependencies
           command: |
-            # Your code here
-            exit 1
+            pip install ansible
+
       - run:
           name: Configure server
           command: |
-            # Your code here
-            exit 1
+            curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/udapeople-backend-url  >> << pipeline.parameters.workingdir >>/playbook/inventory.txt
+            ansible-playbook playbook/configure-server.yml -i inventory --private-key UdacityTestKeyPair.pem
 
       - destroy-environment:
           stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
