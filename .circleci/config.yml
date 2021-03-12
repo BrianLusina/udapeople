@@ -273,9 +273,11 @@ jobs:
     executor: ansible-executor
     steps:
       - checkout
+
       - add_ssh_keys:
           fingerprints:
             - ef:9c:cc:93:e2:98:ef:83:55:b6:d9:50:45:85:9d:47
+
       - attach_workspace:
           at: .
 
@@ -283,8 +285,6 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible curl
-
-      - aws-cli/setup
 
       - run:
           name: Configure server
@@ -303,11 +303,11 @@ jobs:
             curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/udapeople-backend-url  >> << pipeline.parameters.workingdir >>/playbook/inventory.txt
             ansible-playbook playbook/configure-server.yml -i playbook/inventory.txt
 
-      - destroy-environment:
-          stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
+      # - destroy-environment:
+      #     stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
 
-      - destroy-environment:
-          stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
+      # - destroy-environment:
+      #     stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
 
       - alert_on_failure
 
