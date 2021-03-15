@@ -1,5 +1,5 @@
 1. Github Repository: https://github.com/BrianLusina/udapeople
-2. S3 Bucket(green candidate): http://udapeople-999hadvhgchjesr.s3-website.af-south-1.amazonaws.com/
-3. CloudFront distribution (blue candidate production): 
-4. EC2 public urls: 
-5. Prometheus Server:
+2. S3 Bucket(green candidate): http://udapeople-66548cf.s3-website.af-south-1.amazonaws.com/
+3. CloudFront distribution (blue candidate production): https://d28mkoopogwtzs.cloudfront.net/
+4. EC2 public urls: https://ec2-13-244-231-225.af-south-1.compute.amazonaws.com:3030
+5. Prometheus Server: 
