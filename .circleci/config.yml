@@ -406,7 +406,7 @@ jobs:
           name: Deploy backend
           command: |
             curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/udapeople-backend-url  >> << pipeline.parameters.workingdir >>/playbook/inventory.txt
-            ansible-playbook -i << pipeline.parameters.workingdir >>/playbook/inventory.txt << pipeline.parameters.workingdir >>/playbook/deploy-backend.yaml -vv
+            ansible-playbook -i << pipeline.parameters.workingdir >>/playbook/inventory.txt << pipeline.parameters.workingdir >>/playbook/deploy-backend.yml -vv
 
       - aws-cli/setup
 
@@ -469,7 +469,6 @@ jobs:
 
       - run:
           name: Store old WorkflowID in memstash for cleanup phase
-          working_directory: ./.circleci/files
           command: |
             WorkflowID=$(aws cloudformation \
               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
@@ -479,6 +478,7 @@ jobs:
       - run:
           name: Update cloudfront distribution
           command: |
+            cd infra/web
             aws cloudformation deploy \
               --template-file cloudfront.yaml \
               --stack-name udapeople-cloudfront-production \
