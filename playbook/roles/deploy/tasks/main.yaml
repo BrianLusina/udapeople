@@ -17,7 +17,9 @@
 
 - name: Start Server
   become: true
-  command: pm2 start npm --name backend -- start
+  command: pm2 start -f ./main.js
+  args:
+    chdir: /home/ubuntu/app/dist
   environment:
      ENVIRONMENT: production
      TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
