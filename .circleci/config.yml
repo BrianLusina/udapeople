@@ -400,14 +400,16 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible openssh-client tar gzip curl
+            apk add --update ansible openssh-client tar gzip curl rsync openssh nodejs npm
+            pip install awscli
+            aws --version
 
       - run:
           name: Deploy backend
           working_directory: << pipeline.parameters.workingdir >>/playbook
           no_output_timeout: 20m
           command: |
-            curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/udapeople-backend-url  >> inventory.txt
+            curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/udapeople-backend-url >> inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml -vv
 
       - destroy-environment:
