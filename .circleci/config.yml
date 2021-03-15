@@ -402,8 +402,6 @@ jobs:
           command: |
             apk add --update ansible openssh-client tar gzip curl
 
-      - aws-cli/setup
-
       - run:
           name: Deploy backend
           no_output_timeout: 15m
