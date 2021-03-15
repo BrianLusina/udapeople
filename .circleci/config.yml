@@ -285,7 +285,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible curl
+            apk add --update ansible curl jq
+            pip install awscli
+            aws --version
 
       - run:
           name: Configure server
@@ -304,11 +306,11 @@ jobs:
             curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/udapeople-backend-url  >> << pipeline.parameters.workingdir >>/playbook/inventory.txt
             ansible-playbook playbook/configure-server.yml -i playbook/inventory.txt
 
-      # - destroy-environment:
-      #     stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-environment:
+          stackId: udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}
 
-      # - destroy-environment:
-      #     stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-environment:
+          stackId: udapeople-frontend-end-${CIRCLE_WORKFLOW_ID:0:7}
 
       - alert_on_failure
 
@@ -410,6 +412,12 @@ jobs:
             apk add --update ansible openssh-client tar gzip curl rsync openssh nodejs npm jq
             pip install awscli
             aws --version
+
+      - run:
+          name: Build backend
+          command: |
+            cd backend
+            npm run build
 
       - run:
           name: Deploy backend
