@@ -1,17 +1,31 @@
-- name: Copy backend build
-  become: true
-  copy:
-    src: /home/backend.tar.gz
-    dest: /home/ubuntu/backend.tar.gz
+- name: "show remote environment"
+  shell: env
 
-- name: Start PM2
-  shell: |
-    cd /home/ubuntu/
-    tar xzvf backend.tar.gz
-    mv ~/udapeople/backend .
-    cd backend
-    sudo npm install -g npm@latest
-    sudo npm install -g webpack-dev-server
-    sudo npm install
-    sudo npm run build
-    sudo pm2 start npm --name backend -- start
+- name: "copy backend binaries"
+  become: yes
+  synchronize:
+    src: ../../backend/dist
+    dest: /home/ubuntu/app
+    recursive: true
+
+- name: "copy node_modules"
+  become: yes
+  synchronize:
+    src: ../../backend/node_modules
+    dest: /home/ubuntu/app
+    recursive: true
+
+- name: Start Server
+  become: true
+  command: pm2 start npm --name backend -- start
+  environment:
+     ENVIRONMENT: production
+     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+     TYPEORM_MIGRATIONS_DIR: "./migrations"
+     TYPEORM_MIGRATIONS: "./migrations/*.js"
+     TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+     TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+     TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+     TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+     TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+     TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
