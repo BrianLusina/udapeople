@@ -450,7 +450,7 @@ jobs:
           name: Backend smoke test.
           command: |
             export BACKEND_URL=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/udapeople-backend-url)
-            curl "$BACKEND_URL/api/status"
+            curl "$BACKEND_URL:3030/api/status"
 
       - run:
           name: Frontend smoke test.
