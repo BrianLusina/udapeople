@@ -507,21 +507,21 @@ jobs:
 
       - alert_on_failure
 
-  # cleanup:
-  #   executor: node-executor
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Get old stack workflow id
-  #         command: |
-  #           export OldWorkflowID=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/oldWorkflowID)
-  #           export CurrentWorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
+  cleanup:
+    executor: node-executor
+    steps:
+      - checkout
+      - run:
+          name: Get old stack workflow id
+          command: |
+            export OldWorkflowID=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/oldWorkflowID)
+            export CurrentWorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
 
-  #     - run:
-  #         name: Remove old stacks and files
-  #         command: ./scripts/cleanup.sh
+      - run:
+          name: Remove old stacks and files
+          command: ./scripts/cleanup.sh
 
-  #     - alert_on_failure
+      - alert_on_failure
 
 workflows:
   build_test_scan_deploy_configure:
@@ -602,7 +602,7 @@ workflows:
           requires: 
             - smoke-test
 
-      # - cleanup:
-      #     context: udapeople-ctx
-      #     requires: 
-      #       - cloudfront-update
+      - cleanup:
+          context: udapeople-ctx
+          requires: 
+            - cloudfront-update
