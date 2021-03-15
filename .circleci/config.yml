@@ -21,7 +21,7 @@ executors:
   
   smoke-executor:
     docker:
-      - image: python
+      - image: python:3.9.0-alpine
     working_directory: << pipeline.parameters.workingdir >>
 
   docker-executor:
