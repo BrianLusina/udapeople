@@ -404,7 +404,7 @@ jobs:
 
       - run:
           name: Deploy backend
-          no_output_timeout: 15m
+          no_output_timeout: 20m
           command: |
             curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/udapeople-backend-url  >> << pipeline.parameters.workingdir >>/playbook/inventory.txt
             ansible-playbook -i << pipeline.parameters.workingdir >>/playbook/inventory.txt << pipeline.parameters.workingdir >>/playbook/deploy-backend.yml -vv
