@@ -1,4 +1,4 @@
-if grep -q "has been executed successfully" migration_status
+if grep -q "has been executed successfully" ./backend/migration_status
 then
     echo "DB migration was successful, will update memstash..."
     curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" --request PUT --data "success" https://api.memstash.io/values/DB_MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}

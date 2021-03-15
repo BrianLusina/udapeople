@@ -406,7 +406,7 @@ jobs:
           name: Deploy backend
           command: |
             curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/udapeople-backend-url  >> << pipeline.parameters.workingdir >>/playbook/inventory.txt
-            ansible-playbook -i playbook/inventory.txt playbook/deploy-backend.yaml -vv
+            ansible-playbook -i << pipeline.parameters.workingdir >>/playbook/inventory.txt << pipeline.parameters.workingdir >>/playbook/deploy-backend.yaml -vv
 
       - aws-cli/setup
 
