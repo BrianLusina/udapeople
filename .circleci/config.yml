@@ -158,6 +158,7 @@ jobs:
           key: backend-{{ .Environment.CIRCLE_SHA1 }}-{{ .Branch }}
           paths:          
             - backend/node_modules
+            - backend/dist
       - alert_on_failure
 
   test-frontend:
@@ -394,13 +395,19 @@ jobs:
           fingerprints:
             - ef:9c:cc:93:e2:98:ef:83:55:b6:d9:50:45:85:9d:47
 
+      - restore_cache:
+          keys: 
+            - backend-{{ .Environment.CIRCLE_SHA1 }}-{{ .Branch }}
+            - backend-{{ .Environment.CIRCLE_SHA1 }}
+            - backend
+
       - attach_workspace:
           at: .
 
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible openssh-client tar gzip curl rsync openssh nodejs npm
+            apk add --update ansible openssh-client tar gzip curl rsync openssh nodejs npm jq
             pip install awscli
             aws --version
 
@@ -428,14 +435,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update curl nodejs npm
-
-      - aws-cli/setup
-
-      - run:
-          name: Get backend url
-          command: |
-            # your code here
+            apk add --update curl nodejs npm jq
+            pip install awscli
 
       - run:
           name: Backend smoke test.
