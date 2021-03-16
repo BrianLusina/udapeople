@@ -6,6 +6,10 @@ Parameters:
     Description: Unique identifier.
     Type: String
     Default: 999hadvhgchjesr
+  Region:
+    Description: Region for Cloudfront Origin. Especially so, for S3 Bucket Origins
+    Type: String
+    Default: af-south-1
 
 Resources:
   
@@ -20,7 +24,7 @@ Resources:
     Properties:
       DistributionConfig:
         Origins:
-          - DomainName: !Sub "udapeople-${ID}.s3.amazonaws.com"
+          - DomainName: !Sub "udapeople-${ID}.s3.${REGION}.amazonaws.com"
             Id: webpage
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"

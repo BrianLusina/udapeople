@@ -55,3 +55,7 @@ However, for this to work, you must do a few things manually:
 
 Once that is done, subsequent executions of that template will modify the same CloudFront distribution to make the blue-to-green switch without fail.
 
+
+### Prometheus Server
+
+A great article on setting up Monitoring with Prometheus on an EC2 instance: https://codewizardly.com/prometheus-on-aws-ec2-part1/
